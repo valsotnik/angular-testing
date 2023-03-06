@@ -49,4 +49,8 @@ describe("CoursesService", () => {
 
     req.flush(COURSES[12]); // pass data to the mock request to execute all this
   });
+
+  afterEach(() => {
+    httpTestingController.verify(); //verifies that there is no unintended requests
+  });
 });
