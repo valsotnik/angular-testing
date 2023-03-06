@@ -36,4 +36,17 @@ describe("CoursesService", () => {
 
     req.flush({ payload: Object.values(COURSES) }); // only after this line test will executes
   });
+
+  it("should find course by id", () => {
+    coursesService.findCourseById(12).subscribe((course) => {
+      expect(course).toBeTruthy();
+      expect(course.id).toBe(12);
+    });
+
+    const req = httpTestingController.expectOne("/api/courses/12"); // set up mock of the request
+
+    expect(req.request.method).toEqual("GET"); // check the method type
+
+    req.flush(COURSES[12]); // pass data to the mock request to execute all this
+  });
 });
