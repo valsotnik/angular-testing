@@ -90,6 +90,21 @@ describe("HomeComponent", () => {
   });
 
   it("should display advanced courses when tab clicked", () => {
-    pending();
+    coursesService.findAllCourses.and.returnValue(of(setupCourses()));
+
+    fixture.detectChanges();
+
+    const tabs = el.queryAll(By.css(".mdc-tab"));
+
+    click(tabs[1]); // simulate click on second tab with custom click function
+
+    fixture.detectChanges();
+
+    const cardTitles = el.queryAll(By.css(".mat-mdc-card-title"));
+
+    expect(cardTitles.length).toBeGreaterThan(0, "Could not find card titles");
+    expect(cardTitles[0].nativeElement.textContent).toContain(
+      "Angular Security Course"
+    );
   });
 });
