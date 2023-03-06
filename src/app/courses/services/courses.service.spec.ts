@@ -6,6 +6,8 @@ import {
   HttpClientTestingModule,
   HttpTestingController,
 } from "@angular/common/http/testing";
+import { saveCourse } from "../../../../server/save-course.route";
+import { HttpErrorResponse } from "@angular/common/http";
 
 describe("CoursesService", () => {
   let coursesService: CoursesService,
@@ -54,7 +56,7 @@ describe("CoursesService", () => {
   it("should save the course data", () => {
     const changes: Partial<Course> = {
       titles: { description: "Testing Course" },
-    };
+    }; // create data that we want to change
 
     coursesService.saveCourse(12, changes).subscribe((course) => {
       expect(course.id).toBe(12);
@@ -67,8 +69,30 @@ describe("CoursesService", () => {
     );
 
     req.flush({
+      // put data of chosen course with changes
       ...COURSES[12],
       ...changes,
+    });
+  });
+
+  it("should give an error if save course fails", () => {
+    const changes: Partial<Course> = {
+      titles: { description: "Testing Course" },
+    };
+
+    coursesService.saveCourse(12, changes).subscribe(
+      () => fail("The save course operation failed"),
+      (error: HttpErrorResponse) => {
+        expect(error.status).toBe(500);
+      }
+    );
+
+    const req = httpTestingController.expectOne("/api/courses/12");
+    expect(req.request.method).toEqual("PUT");
+    // put error into the request with flush method
+    req.flush("Save course failed", {
+      status: 500,
+      statusText: "Internal Server Error",
     });
   });
 
