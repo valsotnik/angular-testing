@@ -4,6 +4,7 @@ import {
   flush,
   flushMicrotasks,
   TestBed,
+  tick,
   waitForAsync,
 } from "@angular/core/testing";
 import { CoursesModule } from "../courses.module";
@@ -89,7 +90,7 @@ describe("HomeComponent", () => {
     expect(tabs.length).toBe(2, "Unexpected number of tabs found");
   });
 
-  it("should display advanced courses when tab clicked", () => {
+  it("should display advanced courses when tab clicked", fakeAsync(() => {
     coursesService.findAllCourses.and.returnValue(of(setupCourses()));
 
     fixture.detectChanges();
@@ -100,11 +101,13 @@ describe("HomeComponent", () => {
 
     fixture.detectChanges();
 
+    flush();
+
     const cardTitles = el.queryAll(By.css(".mat-mdc-card-title"));
 
     expect(cardTitles.length).toBeGreaterThan(0, "Could not find card titles");
     expect(cardTitles[0].nativeElement.textContent).toContain(
-      "Angular Security Course"
+      "Angular Testing Course"
     );
-  });
+  }));
 });
